@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 
+import { connectToDatabase } from "./config/database.js";
 import { authRoutes } from "./routes/authRoutes.js";
 import { diaryRoutes } from "./routes/diaryRoutes.js";
 
@@ -15,6 +16,15 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Bloom Journal API is running...");
+});
+
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectToDatabase();
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use("/api/auth", authRoutes);

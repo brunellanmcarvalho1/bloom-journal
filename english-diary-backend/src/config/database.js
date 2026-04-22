@@ -21,17 +21,20 @@ async function connectToDatabase() {
     return mongoose.connection;
   }
 
-  try {
-    await mongoose.connection.db
-      .collection("diaryentries")
-      .dropIndex("user_1_entryDate_1");
-  } catch (error) {
-    if (!String(error.message).includes("index not found")) {
-      console.warn("Could not drop legacy diary index:", error.message);
+  if (process.env.SYNC_DB_INDEXES === "true") {
+    try {
+      await mongoose.connection.db
+        .collection("diaryentries")
+        .dropIndex("user_1_entryDate_1");
+    } catch (error) {
+      if (!String(error.message).includes("index not found")) {
+        console.warn("Could not drop legacy diary index:", error.message);
+      }
     }
+
+    await mongoose.syncIndexes();
   }
 
-  await mongoose.syncIndexes();
   indexesSynced = true;
   console.log("Connected to MongoDB");
 
