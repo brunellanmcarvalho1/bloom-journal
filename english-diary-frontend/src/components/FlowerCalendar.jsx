@@ -109,6 +109,11 @@ function FlowerCalendar({
   const safeMonthIndex = currentMonthIndex >= 0 ? currentMonthIndex : monthOptions.length - 1;
   const currentMonth = monthOptions[safeMonthIndex];
   const monthEntries = grouped[currentMonth.key] || [];
+  const bloomDaysCount = monthEntries.length;
+  const bloomsCount = monthEntries.reduce(
+    (sum, entry) => sum + (entry.entries?.length || 0),
+    0,
+  );
   const monthName = new Date(
     Date.UTC(currentMonth.year, currentMonth.month, 1),
   ).toLocaleDateString("en-US", {
@@ -132,7 +137,8 @@ function FlowerCalendar({
         <div className="text-center">
           <h3 className="font-display text-3xl text-plum-900">{monthName}</h3>
           <span className="mt-2 inline-block rounded-full bg-blush-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-rose-700">
-            {monthEntries.length} blooms
+            {bloomDaysCount} {bloomDaysCount === 1 ? "day" : "days"} • {bloomsCount}{" "}
+            {bloomsCount === 1 ? "bloom" : "blooms"}
           </span>
         </div>
 
